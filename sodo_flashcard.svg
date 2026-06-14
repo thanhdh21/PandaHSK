@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 770" width="100%" height="100%">
+  <defs>
+    <!-- Drop Shadow Filter -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-color="#263238" flood-opacity="0.12" />
+    </filter>
+
+    <!-- Gradients -->
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f4faf4" />
+      <stop offset="100%" stop-color="#c8e6c9" />
+    </linearGradient>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f3f9fe" />
+      <stop offset="100%" stop-color="#bbdefb" />
+    </linearGradient>
+    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fffbf5" />
+      <stop offset="100%" stop-color="#ffe0b2" />
+    </linearGradient>
+    
+    <!-- Arrow marker -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#37474f" />
+    </marker>
+  </defs>
+
+  <style>
+    .title { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 17px; font-weight: bold; fill: #1a237e; text-anchor: middle; }
+    .col-header { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 13.5px; font-weight: bold; fill: #37474f; text-anchor: middle; }
+    .node-text { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 12px; font-weight: 500; fill: #263238; text-anchor: middle; }
+    .edge-text { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 11px; font-weight: bold; fill: #e65100; text-anchor: middle; }
+    .flow-line { fill: none; stroke: #37474f; stroke-width: 1.5; marker-end: url(#arrow); }
+  </style>
+
+  <!-- Background Canvas -->
+  <rect width="100%" height="100%" fill="#fcfcfc" rx="10" />
+
+  <!-- Title -->
+  <text x="340" y="30" class="title">SƠ ĐỒ LUỒNG HỌC BÀI MỚI</text>
+
+  <!-- Column Headers -->
+  <text x="180" y="70" class="col-header">PHẦN 1: HỌC QUA FLASHCARD</text>
+  <text x="500" y="70" class="col-header">PHẦN 2: LÀM TRẮC NGHIỆM ĐỂ HOÀN THÀNH</text>
+
+  <!-- Divider Line -->
+  <line x1="340" y1="85" x2="340" y2="740" stroke="#cfd8dc" stroke-width="1.2" stroke-dasharray="5 5" />
+
+  <!-- ==================== LEFT COLUMN: FLASHCARD PHASE ==================== -->
+
+  <!-- F1: Start Block -->
+  <rect x="60" y="100" width="240" height="30" rx="15" fill="url(#greenGrad)" stroke="#2e7d32" stroke-width="1.1" filter="url(#shadow)" />
+  <text x="180" y="119" class="node-text" style="font-weight: bold; fill: #1b5e20;">Bắt đầu học Bài mới</text>
+
+  <!-- F2: Load vocabulary -->
+  <rect x="50" y="160" width="260" height="45" rx="6" fill="url(#blueGrad)" stroke="#1565c0" stroke-width="1.1" filter="url(#shadow)" />
+  <text x="180" y="179" class="node-text" style="font-weight: bold;">Tải từ vựng từ Firestore DB</text>
+  <text x="180" y="194" class="node-text" style="font-size: 10.5px; fill: #455a64;">(Truy vấn theo idBaiHoc tương ứng)</text>
+
+  <!-- F3: Flip Card -->
+  <rect x="50" y="235" width="260" height="40" rx="6" fill="url(#blueGrad)" stroke="#1565c0" stroke-width="1.1" filter="url(#shadow)" />
+  <text x="180" y="259" class="node-text">Người học lật xem chi tiết thẻ Flashcard</text>
+
+  <!-- F4: Init progress -->
+  <rect x="50" y="300" width="260" height="60" rx="6" fill="url(#blueGrad)" stroke="#1565c0" stroke-width="1.1" filter="url(#shadow)" />
+  <text x="180" y="318" class="node-text" style="font-weight: bold; fill: #0d47a1;">Khởi tạo tiến trình học tập:</text>
+  <text x="60" y="335" class="node-text" style="text-anchor: start; font-size: 10.5px;">• daHoc = false (chưa tính vào từ đã học)</text>
+  <text x="60" y="351" class="node-text" style="text-anchor: start; font-size: 10.5px;">• interval = 1, rep = 0, ngayOnTap = Ngày mai</text>
+
+  <!-- F5: End of list decision -->
+  <polygon points="180,390 250,420 180,450 110,420" fill="url(#orangeGrad)" stroke="#ef6c00" stroke-width="1.1" filter="url(#shadow)" />
+  <text x="180" y="424" class="node-text">Hết thẻ?</text>
+
+  <!-- F6: Click Review Button -->
+  <rect x="60" y="480" width="240" height="40" rx="6" fill="url(#blueGrad)" stroke="#1565c0" stroke-width="1.1" filter="url(#shadow)" />
+  <text x="180" y="504" class="node-text" style="font-weight: bold; fill: #0d47a1;">Nhấn "Bắt đầu ôn tập"</text>
+
+
+  <!-- ==================== RIGHT COLUMN: QUIZ PHASE ==================== -->
+
+  <!-- Q1: Launch Quiz Screen -->
+  <rect x="370" y="100" width="260" height="40" rx="6" fill="url(#blueGrad)" stroke="#1565c0" stroke-width="1.1" filter="url(#shadow)" />
+  <text x="500" y="124" class="node-text" style="font-weight: bold;">Chuyển sang TracNghiemScreen</text>
+
+  <!-- Q2: Quiz Setup -->
+  <rect x="370" y="165" width="260" height="40" rx="6" fill="url(#blueGrad)" stroke="#1565c0" stroke-width="1.1" filter="url(#shadow)" />
+  <text x="500" y="189" class="node-text">Trộn câu hỏi &amp; tạo 3 đáp án sai</text>
+
+  <!-- Q3: Quiz Process & SM-2 -->
+  <rect x="360" y="230" width="280" height="85" rx="6" fill="url(#blueGrad)" stroke="#1565c0" stroke-width="1.1" filter="url(#shadow)" />
+  <text x="500" y="248" class="node-text" style="font-weight: bold; fill: #0d47a1;">Trả lời trắc nghiệm &amp; tính SM-2:</text>
+  <text x="370" y="266" class="node-text" style="text-anchor: start; font-size: 11px; fill: #2e7d32; font-weight: bold;">• Trả lời Đúng: daHoc = true, dời ngayOnTap</text>
+  <text x="370" y="282" class="node-text" style="text-anchor: start; font-size: 11px; fill: #d32f2f; font-weight: bold;">• Trả lời Sai: daHoc = false (chưa học)</text>
+  <text x="370" y="298" class="node-text" style="text-anchor: start; font-size: 11px; fill: #455a64;">• Không lên lịch ôn tập nếu trả lời sai</text>
+
+  <!-- Q4: End of Quiz Decision -->
+  <polygon points="500,345 570,375 500,405 430,375" fill="url(#orangeGrad)" stroke="#ef6c00" stroke-width="1.1" filter="url(#shadow)" />
+  <text x="500" y="379" class="node-text">Hết câu hỏi?</text>
+
+  <!-- Q5: Save progress & Finish Lesson -->
+  <rect x="360" y="435" width="280" height="55" rx="6" fill="url(#blueGrad)" stroke="#1565c0" stroke-width="1.1" filter="url(#shadow)" />
+  <text x="500" y="455" class="node-text" style="font-weight: bold;">Lưu tiến trình học vào Firestore</text>
+  <text x="500" y="472" class="node-text" style="font-size: 11px; fill: #455a64;">Đánh dấu bài học "Hoàn thành" (NguoiDungBaiHoc)</text>
+
+  <!-- Q6: Streak update -->
+  <rect x="370" y="515" width="260" height="40" rx="6" fill="url(#blueGrad)" stroke="#1565c0" stroke-width="1.1" filter="url(#shadow)" />
+  <text x="500" y="539" class="node-text">Cập nhật Streak ngày &amp; Lịch sử hoạt động</text>
+
+  <!-- Q7: Redo Decision -->
+  <polygon points="500,575 570,605 500,635 430,605" fill="url(#orangeGrad)" stroke="#ef6c00" stroke-width="1.1" filter="url(#shadow)" />
+  <text x="500" y="609" class="node-text">Làm lại?</text>
+
+  <!-- End Block -->
+  <rect x="400" y="665" width="200" height="30" rx="15" fill="url(#greenGrad)" stroke="#2e7d32" stroke-width="1.5" filter="url(#shadow)" />
+  <text x="500" y="684" class="node-text" style="font-weight: bold; fill: #1b5e20;">Kết thúc bài học mới</text>
+
+
+  <!-- ==================== FLOW LINES (DRAWN ON TOP) ==================== -->
+
+  <!-- Left Column Lines -->
+  <path class="flow-line" d="M 180 130 L 180 158" />
+  <path class="flow-line" d="M 180 205 L 180 233" />
+  <path class="flow-line" d="M 180 275 L 180 298" />
+  <path class="flow-line" d="M 180 360 L 180 388" />
+  
+  <!-- Left Decision -> False (Return to Flashcard view) -->
+  <path class="flow-line" d="M 110 420 L 25 420 L 25 255 L 48 255" />
+  <text x="80" y="412" class="edge-text">False</text>
+
+  <!-- Left Decision -> True (Finish Flashcard) -->
+  <path class="flow-line" d="M 180 450 L 180 478" />
+  <text x="195" y="464" class="edge-text">True</text>
+
+  <!-- Inter-column Transition Line (Starts from right edge of F6 to left edge of Q1) -->
+  <path class="flow-line" d="M 300 500 L 330 500 L 330 120 L 368 120" />
+
+  <!-- Right Column Lines -->
+  <path class="flow-line" d="M 500 140 L 500 163" />
+  <path class="flow-line" d="M 500 205 L 500 228" />
+  <path class="flow-line" d="M 500 315 L 500 343" />
+
+  <!-- Right Decision -> False (Next Question, loop back redirected to the right edge at x=650) -->
+  <path class="flow-line" d="M 570 375 L 650 375 L 650 185 L 632 185" />
+  <text x="610" y="367" class="edge-text">False</text>
+
+  <!-- Right Decision -> True (Finish Quiz) -->
+  <path class="flow-line" d="M 500 405 L 500 433" />
+  <text x="515" y="419" class="edge-text">True</text>
+
+  <!-- Save -> Streak -->
+  <path class="flow-line" d="M 500 490 L 500 513" />
+
+  <!-- Streak -> Redo Decision -->
+  <path class="flow-line" d="M 500 555 L 500 573" />
+
+  <!-- Redo -> False -> End -->
+  <path class="flow-line" d="M 500 635 L 500 663" />
+  <text x="515" y="649" class="edge-text">False</text>
+
+  <!-- Redo -> True -> Loop back to Q2 (redirected to the rightmost edge at x=662) -->
+  <path class="flow-line" d="M 570 605 L 662 605 L 662 185 L 632 185" />
+  <text x="610" y="597" class="edge-text">True</text>
+
+</svg>
