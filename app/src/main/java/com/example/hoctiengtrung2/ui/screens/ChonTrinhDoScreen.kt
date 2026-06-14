@@ -27,22 +27,6 @@ import com.example.hoctiengtrung2.ui.viewmodel.AppViewModelProvider
 import com.example.hoctiengtrung2.ui.viewmodel.CapDoUiState
 import com.example.hoctiengtrung2.ui.viewmodel.CapDoViewModel
 
-
-
-/**
- * Màn hình cho phép người dùng chọn trình độ học tiếng Trung (HSK).
- *
- * Màn hình này hiển thị danh sách các cấp độ dưới dạng lưới thẻ (grid),
- * mỗi thẻ đại diện cho một cấp HSK. Người dùng bấm vào thẻ để chọn trình độ
- * và chuyển sang màn hình học tương ứng.
- *
- * @param onChonCapDo Callback được gọi khi người dùng chọn một cấp độ;
- *                    truyền vào [idCapDo] của cấp độ đã chọn để điều hướng tiếp theo.
- * @param onQuayLai   Callback được gọi khi người dùng nhấn nút "Quay lại" trên thanh AppBar.
- * @param modifier    [Modifier] tùy chỉnh bố cục bên ngoài, mặc định là [Modifier].
- * @param viewModel   [CapDoViewModel] cung cấp trạng thái UI; mặc định được tạo tự động
- *                    qua [AppViewModelProvider.Factory].
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChonTrinhDoScreen(
@@ -107,19 +91,7 @@ fun ChonTrinhDoScreen(
     }
 }
 
-/**
- * Thẻ hiển thị thông tin của một cấp độ HSK.
- *
- * Thẻ này trình bày tên cấp độ, mô tả, icon emoji và màu sắc đặc trưng
- * tương ứng với từng mức HSK. Toàn bộ thẻ có thể bấm được để chọn cấp độ.
- *
- * Lý do tách thành composable riêng: để tái sử dụng trong [LazyVerticalGrid]
- * ở [ChonTrinhDoScreen] và dễ dàng kiểm thử độc lập.
- *
- * @param capDo  Đối tượng [CapDo] chứa thông tin cấp độ cần hiển thị
- *               (tên, mô tả, idCapDo, v.v.).
- * @param onClick Callback được gọi khi người dùng bấm vào thẻ.
- */
+
 @Composable
 fun CapDoCard(capDo: CapDo, onClick: () -> Unit) {
     val (mauNen, mauChu, icon) = mauTheoHSK(capDo.tenCapDo)

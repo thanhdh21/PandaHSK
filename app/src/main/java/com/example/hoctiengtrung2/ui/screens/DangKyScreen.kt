@@ -138,6 +138,8 @@ fun DangKyScreen(
             onClick = { 
                 if (!NetworkUtils.isNetworkAvailable(context)) {
                     errorText = "Không có kết nối mạng. Vui lòng kết nối mạng để đăng ký."
+                } else if (username.length < 6 || password.length < 6) {
+                    errorText = "Tên đăng nhập và mật khẩu phải có ít nhất 6 ký tự."
                 } else {
                     errorText = ""
                     viewModel.dangKy(username, password)
