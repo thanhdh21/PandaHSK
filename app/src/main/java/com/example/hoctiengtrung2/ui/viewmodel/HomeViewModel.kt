@@ -28,7 +28,6 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
                 val data = repository.getHomeData(idNguoiDung)
                 if (data != null) {
                     _uiState.value = HomeUiState.ThanhCong(data)
-                    // Tải trước toàn bộ giáo trình (CapDo, BaiHoc, TuVung) ngầm để lưu vào cache offline
                     launch {
                         try {
                             repository.getTatCaCapDo()

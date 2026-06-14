@@ -69,7 +69,6 @@ class TuVungRemoteDataSource {
             val currentTotal = userSnapshot.getLong("tongTuDaHoc") ?: 0L
 
             if (!snapshot.exists()) {
-                // Lần đầu tiên học từ này
                 val laTracNghiemDungChuaHoc = !isReview && laDung && tuTracNghiem
                 val daHocMoi = if (tuTracNghiem) laDung else laTuMoi
                 
@@ -77,7 +76,6 @@ class TuVungRemoteDataSource {
                     isNewLearned = true
                 }
 
-                // Nếu là trắc nghiệm đúng, hẹn ngày ôn là ngày mai. Nếu chưa học (hoặc sai), không lên lịch ôn (null)
                 val targetNgayOnTap = if (laTracNghiemDungChuaHoc) {
                     val cal = Calendar.getInstance()
                     cal.add(Calendar.DAY_OF_YEAR, 1)
@@ -109,7 +107,6 @@ class TuVungRemoteDataSource {
                 }
                 docRef.set(data).await()
             } else {
-                // Cập nhật thông số cơ bản và tính toán SM-2
                 val soLanDung = snapshot.getLong("soLanDung") ?: 0L
                 val soLanSai = snapshot.getLong("soLanSai") ?: 0L
                 val repetitions = snapshot.getLong("repetitions")?.toInt() ?: 0
@@ -134,7 +131,6 @@ class TuVungRemoteDataSource {
                     isNewReviewed = true
                 }
 
-                // Tính toán SM-2 hoặc hẹn lịch ôn tập
                 var targetNgayOnTap: com.google.firebase.Timestamp? = null
                 var targetRepetitions = 0
                 var targetInterval = 0
@@ -142,9 +138,7 @@ class TuVungRemoteDataSource {
 
                 if (tuTracNghiem) {
                     if (laDung) {
-                        // Nếu bấm đúng:
                         if (laTracNghiemDungChuaHoc) {
-                            // Nếu bấm đúng lần đầu (chuyển sang đã học) -> Lịch ôn tập luôn là ngày mai
                             val cal = Calendar.getInstance()
                             cal.add(Calendar.DAY_OF_YEAR, 1)
                             cal.set(Calendar.HOUR_OF_DAY, 0)
@@ -156,7 +150,6 @@ class TuVungRemoteDataSource {
                             targetInterval = 1
                             targetEasinessFactor = 2.5
                         } else {
-                            // Nếu đã học trước đó và trả lời đúng trong ôn tập/trắc nghiệm -> Dùng SM-2 bình thường
                             val sm2State = SM2Algorithm.calculate(
                                 laDung = true,
                                 prevRepetitions = repetitions,
@@ -169,11 +162,9 @@ class TuVungRemoteDataSource {
                             targetEasinessFactor = sm2State.easinessFactor
                         }
                     } else {
-                        // Nếu bấm sai trong trắc nghiệm/ôn tập -> Coi như chưa học, không hẹn ngày ôn tập (để null)
                         targetNgayOnTap = null
                         targetRepetitions = 0
                         targetInterval = 0
-                        // Cập nhật hệ số dễ theo SM-2 khi trả lời sai (quality = 1)
                         val sm2State = SM2Algorithm.calculate(
                             laDung = false,
                             prevRepetitions = repetitions,
@@ -183,9 +174,6 @@ class TuVungRemoteDataSource {
                         targetEasinessFactor = sm2State.easinessFactor
                     }
                 } else {
-                    // Giai đoạn học Flashcard:
-                    // Không hẹn lịch ôn tập nếu chưa học (chưa bấm đúng trắc nghiệm)
-                    // Nếu đã học rồi, giữ nguyên lịch ôn tập cũ
                     targetNgayOnTap = if (daHocMoi) {
                         snapshot.getTimestamp("ngayOnTapTiepTheo")
                     } else {
@@ -214,18 +202,15 @@ class TuVungRemoteDataSource {
                 docRef.update(updates).await()
             }
 
-            // Thực hiện cập nhật Master Total & Daily Record
             if (isNewLearned || isNewReviewed) {
                 val tuMoiTang = if (isNewLearned) 1L else 0L
                 val tuOnTapTang = if (isNewReviewed) 1L else 0L
                 val newTotal = currentTotal + tuMoiTang
 
-                // 1. Cập nhật NguoiDung
                 if (isNewLearned) {
                     userRef.update("tongTuDaHoc", newTotal).await()
                 }
 
-                // 2. Cập nhật LichSuHoatDong
                 if (!historySnapshot.exists()) {
                     val data = mutableMapOf(
                         "idHoatDong" to historyId,
@@ -287,7 +272,6 @@ class TuVungRemoteDataSource {
                             val collection = if (isFlashcard) "FlashcardCaNhan" else "TuVung"
                             val doc = db.collection(collection).document(id).get().await()
                             if (isFlashcard) {
-                                // Map FlashcardCaNhan to TuVung model for consistent UI
                                 val flash = doc.toObject(com.example.hoctiengtrung2.data.model.FlashcardCaNhan::class.java)
                                 flash?.let {
                                     TuVung(
@@ -336,7 +320,6 @@ class TuVungRemoteDataSource {
             val lastUpdateDate = lastUpdateTimestamp?.toDate()
 
             val calendar = Calendar.getInstance()
-            // Đưa về 0h 0p 0s hôm nay để so sánh ngày
             calendar.set(Calendar.HOUR_OF_DAY, 0)
             calendar.set(Calendar.MINUTE, 0)
             calendar.set(Calendar.SECOND, 0)
@@ -344,7 +327,6 @@ class TuVungRemoteDataSource {
             val today = calendar.time
 
             if (lastUpdateDate == null) {
-                // Lần đầu tiên có streak
                 userRef.update(mapOf(
                     "streak" to 1,
                     "ngayCapNhatStreakCuoi" to com.google.firebase.Timestamp(today)
@@ -355,17 +337,14 @@ class TuVungRemoteDataSource {
 
                 when {
                     diff < oneDayMillis -> {
-                        // Đã cập nhật hôm nay rồi, không làm gì cả
                     }
                     diff == oneDayMillis -> {
-                        // Là ngày tiếp theo (liên tục)
                         userRef.update(mapOf(
                             "streak" to currentStreak + 1,
                             "ngayCapNhatStreakCuoi" to com.google.firebase.Timestamp(today)
                         )).await()
                     }
                     else -> {
-                        // Đã quá 1 ngày, reset streak về 1
                         userRef.update(mapOf(
                             "streak" to 1,
                             "ngayCapNhatStreakCuoi" to com.google.firebase.Timestamp(today)
@@ -403,7 +382,6 @@ class TuVungRemoteDataSource {
                 .await()
             snapshot.toObjects(com.example.hoctiengtrung2.data.model.FlashcardCaNhan::class.java)
         } catch (e: Exception) {
-            // Fallback if index is not created yet
             try {
                 val snapshot = db.collection("FlashcardCaNhan")
                     .whereEqualTo("idNguoiDung", idNguoiDung)

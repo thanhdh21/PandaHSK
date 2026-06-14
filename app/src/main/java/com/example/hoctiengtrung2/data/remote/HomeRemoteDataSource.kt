@@ -57,7 +57,6 @@ class HomeRemoteDataSource {
         val tuHomNay = (hoatDongHomNay?.soTuMoi ?: 0)
         val tuTrongTuan = lichSuToanBo.sumOf { it.soTuMoi }
         
-        // Ưu tiên lấy tổng từ NguoiDung. Nếu chưa có thì lấy từ LichSuHoatDong bản ghi mới nhất.
         var tongTu = user?.tongTuDaHoc ?: 0
         if (tongTu == 0) {
             val querySnapshot = db.collection("LichSuHoatDong")
@@ -94,9 +93,6 @@ class HomeRemoteDataSource {
         )
     }
 
-    /**
-     * Cập nhật lịch sử hoạt động hàng ngày và tổng số từ đã học
-     */
     suspend fun capNhatLichSuHoatDong(
         idND: String,
         tuMoi: Int = 0,
@@ -128,10 +124,8 @@ class HomeRemoteDataSource {
             val currentTotal = userSnapshot.getLong("tongTuDaHoc") ?: 0L
             val newTotal = currentTotal + tuMoi
 
-            // 1. Cập nhật bảng NguoiDung (Master Total)
             userRef.update("tongTuDaHoc", newTotal).await()
 
-            // 2. Cập nhật bảng LichSuHoatDong (Daily Record)
             if (!historySnapshot.exists()) {
                 val data = mutableMapOf(
                     "idHoatDong" to docId,
@@ -271,15 +265,12 @@ class HomeRemoteDataSource {
                 val tenCapDo = capDoMap[idCapDo] ?: "Khác"
                 val date = userWord.ngayHocLanDau?.toDate() ?: return@forEach
 
-                // Tất cả
                 result["Tất cả"]!![tenCapDo] = (result["Tất cả"]!![tenCapDo] ?: 0) + 1
                 
-                // 7 ngày qua
                 if (!date.before(startOf7Days)) {
                     result["7 ngày qua"]!![tenCapDo] = (result["7 ngày qua"]!![tenCapDo] ?: 0) + 1
                 }
 
-                // Tháng này
                 if (!date.before(startOfMonth)) {
                     result["Tháng này"]!![tenCapDo] = (result["Tháng này"]!![tenCapDo] ?: 0) + 1
                 }
@@ -299,7 +290,6 @@ class HomeRemoteDataSource {
         val user = getNguoiDung(idND)
         var currentTotal = user?.tongTuDaHoc ?: 150
         
-        // Tạo dữ liệu cho 6 ngày trước
         for (i in 1..6) {
             calendar.time = Date()
             calendar.add(Calendar.DAY_OF_YEAR, -i)

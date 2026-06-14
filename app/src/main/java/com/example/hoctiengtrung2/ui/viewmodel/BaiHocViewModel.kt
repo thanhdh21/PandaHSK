@@ -31,7 +31,6 @@ class BaiHocViewModel(private val repository: HomeRepository) : ViewModel() {
         viewModelScope.launch {
             _uiState.value = BaiHocUiState.DangTai
             try {
-                // 1. Lấy tất cả bài học và lọc theo cấp độ
                 val tatCaBaiHoc = repository.getTatCaBaiHoc()
                 val dsBaiHoc = tatCaBaiHoc.filter { it.idCapDo == idCapDo }
                 
@@ -40,17 +39,14 @@ class BaiHocViewModel(private val repository: HomeRepository) : ViewModel() {
                     return@launch
                 }
 
-                // 2. Lấy tất cả từ vựng và tiến độ người dùng
                 val tatCaTuVung = repository.getTatCaTuVung()
                 val tienDoNguoiDung = repository.getTienDoTuVungNguoiDung(idNguoiDung)
 
-                // Tạo map để tra cứu nhanh từ vựng đã học (phải trả lời đúng trắc nghiệm ít nhất 1 lần)
                 val setTuDaHoc = tienDoNguoiDung
                     .filter { it.daHoc }
                     .map { it.idTuVung }
                     .toSet()
 
-                // 3. Tính toán tiến độ cho từng bài học
                 val listVoiTienDo = dsBaiHoc.map { baiHoc ->
                     val tuVungCuaBai = tatCaTuVung.filter { it.idBaiHoc == baiHoc.idBaiHoc }
                     val soTuTrongBai = tuVungCuaBai.size.coerceAtLeast(baiHoc.soTu)
@@ -73,4 +69,3 @@ class BaiHocViewModel(private val repository: HomeRepository) : ViewModel() {
         }
     }
 }
-

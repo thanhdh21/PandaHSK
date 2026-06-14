@@ -68,7 +68,6 @@ class TraCuuRepository {
 
         val translatedText = myMemoryResponse?.responseData?.translatedText ?: return@coroutineScope null
 
-        // Parse Hán Việt: Join the first reading of each character
         val hanVietList = thivienResponse?.result?.mapNotNull { it.getFirstReading() }
         val hanViet = if (!hanVietList.isNullOrEmpty()) {
             hanVietList.joinToString(" ").trim()
@@ -76,7 +75,6 @@ class TraCuuRepository {
             null
         }
 
-        // Parse Tatoeba related sentences
         val cauLienQuan = tatoebaResponse?.data?.mapNotNull { sentence ->
             val original = sentence.text
             val translation = sentence.translations?.firstOrNull()?.text
@@ -87,7 +85,6 @@ class TraCuuRepository {
             }
         } ?: emptyList()
 
-        // Query local Firestore database to see if the word exists in database
         var localHanViet: String? = null
         var localLoaiTu: String? = null
 
@@ -114,7 +111,6 @@ class TraCuuRepository {
                 }
             }
         } catch (e: Exception) {
-            // Ignore database error
         }
 
         TraCuuResult(

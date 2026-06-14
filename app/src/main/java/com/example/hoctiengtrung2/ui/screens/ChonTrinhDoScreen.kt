@@ -91,7 +91,6 @@ fun ChonTrinhDoScreen(
     }
 }
 
-
 @Composable
 fun CapDoCard(capDo: CapDo, onClick: () -> Unit) {
     val (mauNen, mauChu, icon) = mauTheoHSK(capDo.tenCapDo)

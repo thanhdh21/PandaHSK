@@ -65,7 +65,6 @@ class XacThucViewModel(private val repository: XacThucRepository) : ViewModel() 
             }
             val success = repository.capNhatThongTin(idNguoiDung, ten, target)
             if (success) {
-                // Lấy lại profile đầy đủ hoặc tạo object mới để đảm bảo có thông tin người dùng
                 val updatedNguoiDung = repository.getProfile(idNguoiDung) ?: NguoiDung(
                     idNguoiDung = idNguoiDung,
                     tenNguoiDung = ten,
@@ -83,7 +82,7 @@ class XacThucViewModel(private val repository: XacThucRepository) : ViewModel() 
             _trangThai.value = TrangThaiDangNhap.Load
             val success = repository.doiMatKhau(idTK, matKhauMoi)
             if (success) {
-                _trangThai.value = TrangThaiDangNhap.Cho // Hoặc tạo trạng thái thành công riêng
+                _trangThai.value = TrangThaiDangNhap.Cho
             } else {
                 _trangThai.value = TrangThaiDangNhap.Loi("Đổi mật khẩu thất bại!")
             }

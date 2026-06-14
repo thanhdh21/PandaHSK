@@ -6,9 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
 class XacThucRemoteDataSource {
-    //Kết nối đến Firestore
     private val firestore = FirebaseFirestore.getInstance()
-    //Tạo tham chiếu đến các collection(table) trong Firestore
     private val taiKhoanCol = firestore.collection("TaiKhoan")
     private val nguoiDungCol = firestore.collection("NguoiDung")
 
@@ -25,22 +23,20 @@ class XacThucRemoteDataSource {
         return try {
             val batch = firestore.batch()
 
-            // Tạo DocumentReference để lấy ID trước
             val tkRef = taiKhoanCol.document()
             val ndRef = nguoiDungCol.document()
 
             val idTK = tkRef.id
             val idND = ndRef.id
 
-            // Cập nhật model với ID thực tế từ Firestore
             val newTaiKhoan = taiKhoan.copy(idTaiKhoan = idTK)
             val newNguoiDung = NguoiDung(
                 idNguoiDung = idND,
                 idTaiKhoan = idTK,
-                tenNguoiDung = "", // Sẽ cập nhật sau ở màn hình thêm thông tin
-                idCapDo = "1", // Mặc định là cấp độ 1
+                tenNguoiDung = "",
+                idCapDo = "1",
                 streak = 0,
-                target = 10 // Mặc định mục tiêu là 10 từ
+                target = 10
             )
 
             batch.set(tkRef, newTaiKhoan)
